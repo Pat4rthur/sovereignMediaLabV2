@@ -1,0 +1,25 @@
+root@pve:~# pct enter 104
+root@sonarr:~# ufw status verbose
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22                         ALLOW IN    172.16.5.10                # Proxmox management only
+8989                       ALLOW IN    172.16.5.0/24              # Sonarr web UI
+
+
+
+
+root@sabnzbd:~# ufw status verbose
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+8083                       ALLOW IN    172.16.5.0/24              # SABnzbd Web UI & API
+22                         ALLOW IN    172.16.5.10                # Proxmox SSH Management

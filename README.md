@@ -48,3 +48,22 @@
 - [RBAC Configuration for lab‑admin](wazuh/screenshots/lab_admin_roles.png)
 - [run_as Fix Command](wazuh/run_as_fix.txt)
 - [WSL Kernel Tuning](wazuh/wsl_sysctl.txt)
+
+## Phase 2.2: First Agent Deployment (Proxmox Host)
+
+**Objective:** Deploy Wazuh agent on the Proxmox hypervisor to collect system-level telemetry and security events.
+
+**Actions Taken:**
+- Generated agent deployment command via Wazuh dashboard (DEB amd64, server `172.16.5.20`)
+- Executed command on Proxmox host (`172.16.5.10`)
+- Verified agent status active and logging to manager
+
+**Verification:**
+- Agent `pve` appears in Wazuh dashboard with status **Active**
+- Agent log shows successful enrollment and data transmission
+
+**Artifacts:**
+- [Agents Page with pve Active](wazuh/screenshots/wazuh_agent_pve_active.png)
+- [Agent Details View](wazuh/screenshots/wazuh_agent_pve_details.png)
+- [Proxmox Agent Service Status](wazuh/agent-logs/proxmox_agent_status.txt)
+- [Agent Log Sample](wazuh/agent-logs/proxmox_ossec_log_sample.txt)

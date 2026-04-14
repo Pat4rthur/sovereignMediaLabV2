@@ -1,0 +1,21 @@
+root@pve:~# pct exec 104 -- tail -20 /var/ossec/logs/ossec.log
+2026/04/14 18:57:01 wazuh-modulesd: INFO: Started (pid: 22104).
+2026/04/14 18:57:01 wazuh-modulesd:agent-upgrade: INFO: (8153): Module Agent Upgrade started.
+2026/04/14 18:57:01 wazuh-modulesd:ciscat: INFO: Module disabled. Exiting...
+2026/04/14 18:57:01 wazuh-modulesd:osquery: INFO: Module disabled. Exiting...
+2026/04/14 18:57:01 sca: INFO: Module started.
+2026/04/14 18:57:01 wazuh-modulesd:control: INFO: Starting control thread.
+2026/04/14 18:57:01 sca: INFO: Loaded policy '/var/ossec/ruleset/sca/cis_ubuntu22-04.yml'
+2026/04/14 18:57:01 sca: INFO: Starting Security Configuration Assessment scan.
+2026/04/14 18:57:01 wazuh-modulesd:syscollector: INFO: Module started.
+2026/04/14 18:57:01 wazuh-modulesd:syscollector: INFO: Starting evaluation.
+2026/04/14 18:57:01 sca: INFO: Starting evaluation of policy: '/var/ossec/ruleset/sca/cis_ubuntu22-04.yml'
+2026/04/14 18:57:01 wazuh-modulesd:syscollector: INFO: Evaluation finished.
+2026/04/14 18:57:02 wazuh-logcollector: INFO: (9203): Monitoring journal entries.
+2026/04/14 18:57:05 sca: INFO: Evaluation finished for policy '/var/ossec/ruleset/sca/cis_ubuntu22-04.yml'
+2026/04/14 18:57:05 sca: INFO: Security Configuration Assessment scan finished. Duration: 4 seconds.
+2026/04/14 18:57:11 rootcheck: INFO: Ending rootcheck scan.
+2026/04/14 19:57:02 wazuh-modulesd:syscollector: INFO: Starting evaluation.
+2026/04/14 19:57:04 wazuh-modulesd:syscollector: INFO: Evaluation finished.
+2026/04/14 20:57:05 wazuh-modulesd:syscollector: INFO: Starting evaluation.
+2026/04/14 20:57:07 wazuh-modulesd:syscollector: INFO: Evaluation finished.

@@ -1,0 +1,21 @@
+root@pve:~# tail -20 /var/ossec/logs/ossec.log 
+2026/04/14 11:16:14 wazuh-logcollector: INFO: (1950): Analyzing file: '/var/ossec/logs/active-responses.log'.
+2026/04/14 11:16:14 wazuh-logcollector: INFO: (1950): Analyzing file: '/var/log/dpkg.log'.
+2026/04/14 11:16:14 wazuh-logcollector: INFO: Started (pid: 2076495).
+2026/04/14 11:16:14 wazuh-syscheckd: INFO: (6009): File integrity monitoring scan ended.
+2026/04/14 11:16:14 wazuh-syscheckd: INFO: FIM sync module started.
+2026/04/14 11:16:15 wazuh-modulesd: INFO: Started (pid: 2076543).
+2026/04/14 11:16:15 wazuh-modulesd:agent-upgrade: INFO: (8153): Module Agent Upgrade started.
+2026/04/14 11:16:15 wazuh-modulesd:ciscat: INFO: Module disabled. Exiting...
+2026/04/14 11:16:15 wazuh-modulesd:osquery: INFO: Module disabled. Exiting...
+2026/04/14 11:16:15 sca: INFO: Module started.
+2026/04/14 11:16:15 sca: INFO: Loaded policy '/var/ossec/ruleset/sca/cis_debian11.yml'
+2026/04/14 11:16:15 wazuh-modulesd:control: INFO: Starting control thread.
+2026/04/14 11:16:15 sca: INFO: Starting Security Configuration Assessment scan.
+2026/04/14 11:16:15 wazuh-modulesd:syscollector: INFO: Module started.
+2026/04/14 11:16:15 wazuh-modulesd:syscollector: INFO: Starting evaluation.
+2026/04/14 11:16:15 sca: INFO: Skipping policy '/var/ossec/ruleset/sca/cis_debian11.yml': 'Check Debian version.'
+2026/04/14 11:16:15 sca: INFO: Security Configuration Assessment scan finished. Duration: 0 seconds.
+2026/04/14 11:16:15 wazuh-modulesd:syscollector: INFO: Evaluation finished.
+2026/04/14 11:16:16 wazuh-logcollector: INFO: (9203): Monitoring journal entries.
+2026/04/14 11:17:16 rootcheck: INFO: Ending rootcheck scan.

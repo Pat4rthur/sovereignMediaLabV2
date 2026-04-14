@@ -1,0 +1,25 @@
+root@pve:~# systemctl status wazuh-agent
+● wazuh-agent.service - Wazuh agent
+     Loaded: loaded (/usr/lib/systemd/system/wazuh-agent.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-04-14 11:15:51 CDT; 42min ago
+ Invocation: 05c71e2793e141ef827c7cb8e2d30180
+    Process: 2075964 ExecStart=/usr/bin/env /var/ossec/bin/wazuh-control start (code=exited, status=0/SUCCESS)
+      Tasks: 42 (limit: 76188)
+     Memory: 545M (peak: 557.7M)
+        CPU: 34.136s
+     CGroup: /system.slice/wazuh-agent.service
+             ├─2076420 /var/ossec/bin/wazuh-execd
+             ├─2076451 /var/ossec/bin/wazuh-agentd
+             ├─2076482 /var/ossec/bin/wazuh-syscheckd
+             ├─2076495 /var/ossec/bin/wazuh-logcollector
+             └─2076543 /var/ossec/bin/wazuh-modulesd
+
+Apr 14 11:15:44 pve systemd[1]: Starting wazuh-agent.service - Wazuh agent...
+Apr 14 11:15:44 pve env[2075964]: Starting Wazuh v4.11.0...
+Apr 14 11:15:45 pve env[2075964]: Started wazuh-execd...
+Apr 14 11:15:46 pve env[2075964]: Started wazuh-agentd...
+Apr 14 11:15:47 pve env[2075964]: Started wazuh-syscheckd...
+Apr 14 11:15:48 pve env[2075964]: Started wazuh-logcollector...
+Apr 14 11:15:49 pve env[2075964]: Started wazuh-modulesd...
+Apr 14 11:15:51 pve env[2075964]: Completed.
+Apr 14 11:15:51 pve systemd[1]: Started wazuh-agent.service - Wazuh agent.

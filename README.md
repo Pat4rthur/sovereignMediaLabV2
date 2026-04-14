@@ -67,3 +67,21 @@
 - [Agent Details View](wazuh/screenshots/wazuh_agent_pve_details.png)
 - [Proxmox Agent Service Status](wazuh/agent_logs/proxmox_agent_status.txt)
 - [Agent Log Sample](wazuh/agent_logs/proxmox_ossec_log_sample.txt)
+
+## Phase 2.3: Multi-Agent Deployment (LXC Containers)
+
+**Objective:** Deploy Wazuh agents across all 9 LXC containers hosting the ARR media stack and supporting services.
+
+**Actions Taken:**
+- Created a bash script on the Proxmox host to loop through container IDs and install the Wazuh agent via the official quick‑install script
+- Addressed missing dependencies (`lsb-release`) automatically within the script
+- Verified all 10 agents (Proxmox host + 9 containers) are actively reporting to the manager
+
+**Verification:**
+- All 10 agents appear in Wazuh dashboard with status **Active**
+- Agent logs confirm successful enrollment and data transmission
+
+**Artifacts:**
+- [Agents Page with All Containers Active](wazuh/screenshots/wazuh_agents_all_active.png)
+- [LXC Installation Script](scripts/install_wazuh_agents_lxc.sh)
+- [Sample Agent Log (Sonarr)](wazuh/agent-logs/sonarr_agent_log.txt)

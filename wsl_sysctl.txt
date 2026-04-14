@@ -1,0 +1,4 @@
+=== Current vm.max_map_count ===
+vm.max_map_count = 1048576
+
+=== Persistent setting in /etc/sysctl.conf ===

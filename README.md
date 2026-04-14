@@ -42,9 +42,9 @@
 - Containerized SIEM deployment provides rapid, reproducible infrastructure suitable for lab and production environments
 
 **Artifacts:**
-- [Dashboard Overview](screenshots/wazuh/wazuh_dashboard_overview.png)
-- [Agents Page (Pre‑Deployment)](screenshots/wazuh/wazuh_agents_page.png)
+- [Dashboard Overview](wazuh/screenshots/wazuh_dashboard_overview.png)
+- [Agents Page (Pre‑Deployment)](wazuh/screenshots/wazuh_agents_page.png)
 - [Docker Container Status](wazuh/docker_ps_output.txt)
-- [RBAC Configuration for lab‑admin](screenshots/wazuh/lab_admin_roles.png)
+- [RBAC Configuration for lab‑admin](wazuh/screenshots/lab_admin_roles.png)
 - [run_as Fix Command](wazuh/run_as_fix.txt)
 - [WSL Kernel Tuning](wazuh/wsl_sysctl.txt)

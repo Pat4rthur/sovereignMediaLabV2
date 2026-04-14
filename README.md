@@ -84,4 +84,4 @@
 **Artifacts:**
 - [Agents Page with All Containers Active](wazuh/screenshots/wazuh_agents_all_active.png)
 - [LXC Installation Script](scripts/install_wazuh_agents_lxc.sh)
-- [Sample Agent Log (Sonarr)](wazuh/agent-logs/sonarr_agent_log.txt)
+- [Sample Agent Log (Sonarr)](wazuh/agent_logs/sonarr_agent_log.txt)

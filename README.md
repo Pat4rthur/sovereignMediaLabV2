@@ -65,5 +65,5 @@
 **Artifacts:**
 - [Agents Page with pve Active](wazuh/screenshots/wazuh_agent_pve_active.png)
 - [Agent Details View](wazuh/screenshots/wazuh_agent_pve_details.png)
-- [Proxmox Agent Service Status](wazuh/agent-logs/proxmox_agent_status.txt)
-- [Agent Log Sample](wazuh/agent-logs/proxmox_ossec_log_sample.txt)
+- [Proxmox Agent Service Status](wazuh/agent_logs/proxmox_agent_status.txt)
+- [Agent Log Sample](wazuh/agent_logs/proxmox_ossec_log_sample.txt)

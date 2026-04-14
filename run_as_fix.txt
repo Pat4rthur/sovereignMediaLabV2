@@ -1,0 +1,15 @@
+=== Command executed to apply run_as fix ===
+docker exec single-node-wazuh.dashboard-1 sh -c 'echo "run_as: true" > /usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml'
+
+=== Current content of wazuh.yml inside container ===
+run_as: true
+hosts:
+  - 1513629884013:
+      url: https://wazuh.manager
+      port: 55000
+      username: wazuh-wui
+      password: MyS3cr37P450r.*-
+      run_as: false
+
+=== Container restart command ===
+docker restart single-node-wazuh.dashboard-1

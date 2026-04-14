@@ -1,5 +1,6 @@
 # sovereignMediaLabV2
  Transforming a functional ARR homelab into a documented, monitored, and segmented Security Operations Center (SOC) portfolio piece.
+
 ## Phase 1: Environment Documentation & Security Baseline
 
 **Objective:** Document existing Proxmox/ARR homelab and establish a known, hardened security baseline before deploying monitoring.
@@ -18,3 +19,32 @@
 **Artifacts:**
 - [Network Diagram](diagrams/network_architecture_v1.png)
 - [UFW Rules Summary](firewall/ufw_rules_summary.txt)
+
+## Phase 2: SIEM Deployment (Wazuh on Docker)
+
+**Objective:** Deploy a fully functional Wazuh SIEM/XDR platform to monitor the Proxmox homelab environment, establish role‑based access control, and prepare for agent deployment.
+
+**Environment:**
+- **Host:** Windows 11 Pro (172.16.5.20)
+- **Method:** Docker Compose (single‑node) on WSL2
+- **Version:** Wazuh 4.11.0
+
+**Actions Taken:**
+- Configured WSL kernel parameter `vm.max_map_count=262144` for OpenSearch compatibility
+- Cloned official Wazuh Docker repository and deployed full stack (Manager, Indexer, Dashboard)
+- Created custom administrator user `lab-admin` with full RBAC permissions
+- Resolved dashboard permission errors by enabling `run_as: true` in container configuration
+- Verified dashboard access and module availability
+
+**Key Learning:**
+- Wazuh's internal user management requires both indexer‑level (`all_access` role duplication) and server‑level (`administrator` role mapping) permissions
+- The `run_as` setting is required for non‑default admin accounts to assume full privileges in the dashboard
+- Containerized SIEM deployment provides rapid, reproducible infrastructure suitable for lab and production environments
+
+**Artifacts:**
+- [Dashboard Overview](screenshots/wazuh/wazuh_dashboard_overview.png)
+- [Agents Page (Pre‑Deployment)](screenshots/wazuh/wazuh_agents_page.png)
+- [Docker Container Status](wazuh/docker_ps_output.txt)
+- [RBAC Configuration for lab‑admin](screenshots/wazuh/lab_admin_roles.png)
+- [run_as Fix Command](wazuh/run_as_fix.txt)
+- [WSL Kernel Tuning](wazuh/wsl_sysctl.txt)

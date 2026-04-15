@@ -39,24 +39,25 @@ This document records significant operational incidents and their resolutions.
 
 **Resolution Steps:**
 1. Attempted to copy the project to the native WSL Linux filesystem:
-   ```bash
-   cp -r /mnt/c/Users/Freep/Downloads/Wazuh/wazuh-docker ~/
+
+`cp -r /mnt/c/Users/Freep/Downloads/Wazuh/wazuh-docker ~/`
 This failed due to permission errors on the certificate files.
+
 2. Removed the partial copy and used sudo to force deletion of the old Windows‑side directory (optional but clean):
 
 `cd ~
 sudo rm -rf wazuh-docker`
 
-Performed a fresh clone of the Wazuh Docker repository directly into the WSL Linux filesystem:
+3. Performed a fresh clone of the Wazuh Docker repository directly into the WSL Linux filesystem:
 `git clone https://github.com/wazuh/wazuh-docker.git -b v4.11.0 ~/wazuh-docker
 cd ~/wazuh-docker/single-node`
 
-Generated certificates successfully from the new location:
+4. Generated certificates successfully from the new location:
 `docker compose -f generate-indexer-certs.yml run --rm generator`
 
-Started the stack:
+5. Started the stack:
 `docker compose up -d`
 
-Restarted all agents from the Proxmox host to re‑enroll with the fresh manager.
+6. Restarted all agents from the Proxmox host to re‑enroll with the fresh manager.
 
 Preventative Measure: Always store Docker‑managed project files (especially those requiring volume mounts with specific Unix ownership) within the WSL Linux filesystem (~/) rather than on Windows‑mounted drives (/mnt/c/). This ensures correct permission handling and avoids filesystem translation issues.

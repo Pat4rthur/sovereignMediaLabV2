@@ -85,3 +85,6 @@
 - [Agents Page with All Containers Active](wazuh/screenshots/wazuh_agents_all_active.png)
 - [LXC Installation Script](scripts/install_wazuh_agents_lxc.sh)
 - [Sample Agent Log (Sonarr)](wazuh/agent_logs/sonarr_agent_log.txt)
+
+- **Post-Update Recovery**: After a Windows Update restart, the Wazuh manager container may need to be restarted and agents may require re-enrollment if the manager's data volume is reset. See [Troubleshooting Guide](docs/troubleshooting.md) for resolution steps.
+- **Port Conflict**: Windows may reserve port 55000. The stack uses port 56000 on the host to avoid this conflict.

@@ -29,3 +29,34 @@ This document records significant operational incidents and their resolutions.
 2. Adjusted Windows dynamic port range to start at `49152`:
    ```powershell
    netsh int ipv4 set dynamicportrange tcp start=49152 num=16384
+
+## Incident 3: Permission Denied When Generating Certificates on Windows Filesystem
+
+**Date:** 2026-04-15  
+**Symptom:** Running `docker compose -f generate-indexer-certs.yml run --rm generator` failed with multiple `Permission denied` errors when attempting to write certificate files (`root-ca.key`, `wazuh.manager.pem`, etc.) to the `config/wazuh_indexer_ssl_certs/` directory. Additionally, attempting to remove the `config/` directory manually resulted in similar permission errors.  
+
+**Root Cause:** The Wazuh Docker project was located on the Windows filesystem (accessible via `/mnt/c/Users/...`). Docker containers running under WSL2 cannot properly set Unix file ownership and permissions on Windows‑mounted drives, causing write operations to fail and leaving files with ownership that prevents normal user deletion.  
+
+**Resolution Steps:**
+1. Attempted to copy the project to the native WSL Linux filesystem:
+   ```bash
+   cp -r /mnt/c/Users/Freep/Downloads/Wazuh/wazuh-docker ~/
+This failed due to permission errors on the certificate files.
+2. Removed the partial copy and used sudo to force deletion of the old Windows‑side directory (optional but clean):
+
+`cd ~
+sudo rm -rf wazuh-docker`
+
+Performed a fresh clone of the Wazuh Docker repository directly into the WSL Linux filesystem:
+`git clone https://github.com/wazuh/wazuh-docker.git -b v4.11.0 ~/wazuh-docker
+cd ~/wazuh-docker/single-node`
+
+Generated certificates successfully from the new location:
+`docker compose -f generate-indexer-certs.yml run --rm generator`
+
+Started the stack:
+`docker compose up -d`
+
+Restarted all agents from the Proxmox host to re‑enroll with the fresh manager.
+
+Preventative Measure: Always store Docker‑managed project files (especially those requiring volume mounts with specific Unix ownership) within the WSL Linux filesystem (~/) rather than on Windows‑mounted drives (/mnt/c/). This ensures correct permission handling and avoids filesystem translation issues.

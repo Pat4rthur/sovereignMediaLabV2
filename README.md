@@ -88,3 +88,36 @@
 
 - **Post-Update Recovery**: After a Windows Update restart, the Wazuh manager container may need to be restarted and agents may require re-enrollment if the manager's data volume is reset. See [Troubleshooting Guide](docs/troubleshooting.md) for resolution steps.
 - **Port Conflict**: Windows may reserve port 55000. The stack uses port 56000 on the host to avoid this conflict.
+
+## Phase 2.4: Custom Detection Rules for ARR Stack
+
+**Objective:** Create tailored Wazuh detection rules to identify anomalous
+behavior within the ARR media automation suite, specifically suspicious
+DNS queries from Prowlarr and file execution attempts in SABnzbd download
+directories.
+
+**Actions Taken:**
+- Edited `local_rules.xml` on Wazuh Manager container to add custom rules:
+  - Rule 100101 (Level 10): Prowlarr suspicious DNS request to .xyz/.top TLD
+  - Rule 100102 (Level 12): SABnzbd download directory file execution attempt
+- Resolved XML validation errors by removing `<decoded_as>` tags incompatible
+  with Wazuh 4.11's stricter parser
+- Configured agents on CT103 (SABnzbd) and CT108 (Prowlarr) to monitor
+  `/var/log/syslog` in addition to service-specific journals
+- Validated rule functionality by simulating malicious activity via `logger`
+  and confirming alerts appeared in Security Events dashboard
+
+**Key Learning:**
+- Wazuh 4.11 rejects `<decoded_as>syslog</decoded_as>` in custom rules;
+  removing the tag allows rules to inherit decoder context from parent group
+- The `logger` command writes to syslog, not service journals; agent
+  configuration must include `<localfile>` for `/var/log/syslog` to capture
+  such test events
+- PowerShell-to-Docker heredoc syntax is fragile on Windows; piping
+  Base64-encoded content avoids encoding and escape character issues
+
+**Artifacts:**
+- [Custom Rules Definition](wazuh/custom_rules.xml)
+- [Alert 100102 - SABnzbd File Execution](wazuh/screenshots/alert_100102_fired.png)
+- [Alert 100101 - Prowlarr Suspicious DNS](wazuh/screenshots/alert_100101_fired.png)
+

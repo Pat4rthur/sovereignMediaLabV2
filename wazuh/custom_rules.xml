@@ -1,0 +1,13 @@
+<group name="local,syslog,arr_suite">
+
+  <rule id="100101" level="10">
+    <description>Prowlarr suspicious DNS request to .xyz/.top TLD</description>
+    <match>prowlarr.*query.*\.xyz|prowlarr.*query.*\.top</match>
+  </rule>
+
+  <rule id="100102" level="12">
+    <description>SABnzbd download directory file execution attempt</description>
+    <match>SABnzbd attempted to execute</match>
+  </rule>
+
+</group>

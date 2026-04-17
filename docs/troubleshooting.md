@@ -62,7 +62,7 @@ cd ~/wazuh-docker/single-node`
 
 Preventative Measure: Always store Docker‑managed project files (especially those requiring volume mounts with specific Unix ownership) within the WSL Linux filesystem (~/) rather than on Windows‑mounted drives (/mnt/c/). This ensures correct permission handling and avoids filesystem translation issues.
 
-## Incident 3: Custom Rules Validated but Live Alerts Not Firing from Agents
+## Incident 4: Custom Rules Validated but Live Alerts Not Firing from Agents
 
 **Date:** 2026-04-17
 

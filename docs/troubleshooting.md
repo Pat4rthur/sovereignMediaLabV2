@@ -61,3 +61,31 @@ cd ~/wazuh-docker/single-node`
 6. Restarted all agents from the Proxmox host to re‑enroll with the fresh manager.
 
 Preventative Measure: Always store Docker‑managed project files (especially those requiring volume mounts with specific Unix ownership) within the WSL Linux filesystem (~/) rather than on Windows‑mounted drives (/mnt/c/). This ensures correct permission handling and avoids filesystem translation issues.
+
+## Incident 6: Custom Rules Validated but Live Alerts Not Firing from Agents
+
+**Date:** 2026-04-17
+
+**Symptom:** Custom rule 100101 fires correctly in `wazuh-logtest`, but simulated events from CT108 (Prowlarr) do not generate alerts in the Wazuh Dashboard. Agent shows connected, syslog monitoring enabled, and network connectivity verified.
+
+**Root Cause Investigation:**
+- Rule logic confirmed via `wazuh-logtest` (decoder `root` extracts message, rule matches)
+- Agent configuration correct (`/var/log/syslog` monitored, manager address 172.16.5.20)
+- Network connectivity successful (`nc -vz 172.16.5.20 1514`)
+- Manager archives (`archives.log`) empty despite `<logall>yes</logall>`
+- Manager logs show persistent `wazuh-csyslogd` configuration errors from legacy daemons
+
+**Hypothesis:** The manager's analysis pipeline is partially impaired due to unresolved `csyslogd` and `dbd` configuration errors, preventing full processing of incoming events.
+
+**Workaround / Mitigation:**
+- Rule functionality was fully validated using `wazuh-logtest`, confirming detection logic is sound.
+- Agent-side configuration is correct and ready for future pipeline resolution.
+
+**Lessons Learned:**
+- Isolate rule testing with `wazuh-logtest` early to separate logic issues from pipeline issues.
+- In containerized Wazuh deployments, legacy daemon errors can subtly break log processing even when core services appear running.
+- Full pipeline validation requires end-to-end testing with archives enabled.
+
+**Next Steps (Future Work):**
+- Rebuild Wazuh manager container with a clean `ossec.conf` that explicitly disables all legacy daemons.
+- Validate end-to-end alerting with a minimal test environment before scaling to all LXC agents.

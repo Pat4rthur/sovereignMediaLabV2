@@ -144,7 +144,7 @@ in the ARR stack, specifically Prowlarr DNS queries to high-risk TLDs
 - [Rule 100102 Live Alert](wazuh/screenshots/alert_100102_fired.png)
 - [Troubleshooting: Agent Pipeline Issue](docs/troubleshooting.md#incident-6)
 
-## Phase 2.6: Vulnerability Detection (CVE Scanning)
+## Task 2.6: Vulnerability Detection (CVE Scanning)
 
 **Objective:** Enable Wazuh's built-in vulnerability detector to continuously
 scan all Ubuntu 22.04 LXC containers for known CVEs using Canonical's OVAL feed.

@@ -143,3 +143,25 @@ in the ARR stack, specifically Prowlarr DNS queries to high-risk TLDs
 - [Rule 100101 Logtest Validation](wazuh/screenshots/rule_100101_logtest.png)
 - [Rule 100102 Live Alert](wazuh/screenshots/alert_100102_fired.png)
 - [Troubleshooting: Agent Pipeline Issue](docs/troubleshooting.md#incident-6)
+
+## Phase 2.6: Vulnerability Detection (CVE Scanning)
+
+**Objective:** Enable Wazuh's built-in vulnerability detector to continuously
+scan all Ubuntu 22.04 LXC containers for known CVEs using Canonical's OVAL feed.
+
+**Actions Taken:**
+- Edited Wazuh Manager `ossec.conf` to enable the vulnerability-detector module
+- Configured Canonical provider for Ubuntu Jammy (22.04) and Focal (20.04)
+- Set scan interval to 1 hour with run-on-start enabled
+- Restarted manager and verified module initialization in logs
+
+**Key Learning:**
+- Vulnerability detection is disabled by default and requires explicit
+  provider configuration
+- The Canonical provider pulls CVE data from OVAL feeds; initial database
+  download may take 10–20 minutes
+- Scan results appear under "Vulnerability Detection" in the Wazuh dashboard
+
+**Artifacts:**
+- [Vulnerability Detector Configuration](wazuh/ossec_vulnerability_config.xml)
+- [Vulnerability Dashboard Overview](wazuh/screenshots/vulnerability_detector_enabled.png)

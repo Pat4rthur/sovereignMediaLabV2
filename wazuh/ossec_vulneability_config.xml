@@ -1,0 +1,20 @@
+<vulnerability-detector>
+    <enabled>yes</enabled>
+    <interval>1h</interval>
+    <min_full_scan_interval>6h</min_full_scan_interval>
+    <run_on_start>yes</run_on_start>
+
+    <!-- Ubuntu 22.04 (Jammy) -->
+    <provider name="canonical">
+        <enabled>yes</enabled>
+        <os>jammy</os>
+        <update_interval>1h</update_interval>
+    </provider>
+
+    <!-- Ubuntu 20.04 (Focal) - if any older containers exist -->
+    <provider name="canonical">
+        <enabled>yes</enabled>
+        <os>focal</os>
+        <update_interval>1h</update_interval>
+    </provider>
+</vulnerability-detector>

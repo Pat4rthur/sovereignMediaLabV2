@@ -165,3 +165,27 @@ scan all Ubuntu 22.04 LXC containers for known CVEs using Canonical's OVAL feed.
 **Artifacts:**
 - [Vulnerability Detector Configuration](wazuh/ossec_vulnerability_config.xml)
 - [Vulnerability Dashboard Overview](wazuh/screenshots/vulnerability_detector_enabled.png)
+
+## Phase 3: Secure Remote Access via WireGuard VPN
+
+**Objective:** Establish remote access to ARR stack web UIs without exposing
+ports to the WAN, enforcing least-privilege routing and UFW microsegmentation.
+
+**Actions Taken:**
+- Deployed WireGuard VPN container (CT 201) using WG-Easy for simplified
+  client management
+- Configured strict AllowedIPs (`172.16.5.0/24`) to prevent VPN clients
+  from accessing internet or corporate networks
+- Tested remote access to Sonarr/Plex while confirming SSH to Proxmox
+  remained blocked (UFW enforcement)
+- Verified zero-trust lateral movement prevention
+
+**Key Learning:**
+- WG-Easy provides a clean web UI for WireGuard key management
+- AllowedIPs restriction is critical for least-privilege remote access
+- UFW rules remain effective even over VPN, demonstrating defense in depth
+
+**Artifacts:**
+- [WG-Easy Client Configuration](vpn/wg_easy_allowed_ips.png)
+- [VPN Access Test - Sonarr UI](vpn/vpn_sonarr_access.png)
+- [VPN Blocked SSH - UFW](vpn/vpn_ssh_blocked.png)

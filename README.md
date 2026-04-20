@@ -219,3 +219,11 @@ execution attempt is logged, triggering a Wazuh alert.
 - [Mounted Filesystem – File Inspection](incident_response/file_inspection.png)
 - [SHA256 Hash & Talos Intelligence Check](incident_response/talos_hash_check.png)
 - [Eradication – File Deletion](incident_response/file_deletion.png)
+
+## ⚖️ Ethical Use Statement
+This project is a **cybersecurity homelab built for educational and portfolio
+purposes only**. All media content used in testing was legally obtained or
+synthetically generated. No actual Usenet/torrent downloads occurred during
+the simulation. The ARR suite was selected solely for its technical complexity
+as a multi‑container application stack—the security principles demonstrated
+apply to any containerized environment.

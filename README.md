@@ -189,3 +189,28 @@ ports to the WAN, enforcing least-privilege routing and UFW microsegmentation.
 - [WG-Easy Client Configuration](vpn/wg_easy_allowed_ips.png)
 - [VPN Access Test - Sonarr UI](vpn/vpn_sonarr_access.jpeg)
 - [VPN Blocked SSH - UFW](vpn/vpn_ssh_blocked.jpeg)
+
+  ## Phase 4: Purple Team Simulation & Incident Response
+
+**Objective:** Simulate a real‑world threat scenario within the ARR stack,
+validate custom detection rules, and create a formal incident response playbook.
+
+**Scenario:** A malicious executable (`.exe`) is downloaded via SABnzbd and an
+execution attempt is logged, triggering a Wazuh alert.
+
+**Actions Taken:**
+- Simulated file execution attempt using `logger` on CT103 (SABnzbd):
+  `logger "SABnzbd attempted to execute /mnt/tank/downloads/complete/movies/suspicious_file.exe"`
+- Verified that custom Wazuh rule 100102 fired a Level 12 alert in the Dashboard.
+- Developed a comprehensive Incident Response Playbook covering detection,
+  containment, eradication, and recovery procedures tailored to the LXC/Proxmox
+  environment.
+
+**Key Learning:**
+- Custom detection rules enable rapid identification of application‑layer anomalies.
+- A pre‑defined IR playbook reduces response time and ensures consistent handling.
+- LXC container isolation simplifies forensic analysis and containment actions.
+
+**Artifacts:**
+- [Incident Response Playbook – SABnzbd Malware](incident_response/IR_SABnzbd_Malware.md)
+- [Wazuh Alert – Rule 100102 Fired](wazuh/screenshots/alert_100102_fired.png)

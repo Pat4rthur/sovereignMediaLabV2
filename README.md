@@ -187,5 +187,5 @@ ports to the WAN, enforcing least-privilege routing and UFW microsegmentation.
 
 **Artifacts:**
 - [WG-Easy Client Configuration](vpn/wg_easy_allowed_ips.png)
-- [VPN Access Test - Sonarr UI](vpn/vpn_sonarr_access.png)
-- [VPN Blocked SSH - UFW](vpn/vpn_ssh_blocked.png)
+- [VPN Access Test - Sonarr UI](vpn/vpn_sonarr_access.jpeg)
+- [VPN Blocked SSH - UFW](vpn/vpn_ssh_blocked.jpeg)

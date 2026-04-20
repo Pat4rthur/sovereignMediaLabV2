@@ -190,27 +190,32 @@ ports to the WAN, enforcing least-privilege routing and UFW microsegmentation.
 - [VPN Access Test - Sonarr UI](vpn/vpn_sonarr_access.jpeg)
 - [VPN Blocked SSH - UFW](vpn/vpn_ssh_blocked.jpeg)
 
-  ## Phase 4: Purple Team Simulation & Incident Response
+## Phase 4: Purple Team Simulation & Incident Response
 
 **Objective:** Simulate a real‑world threat scenario within the ARR stack,
-validate custom detection rules, and create a formal incident response playbook.
+validate custom detection rules, and document incident response procedures.
 
 **Scenario:** A malicious executable (`.exe`) is downloaded via SABnzbd and an
 execution attempt is logged, triggering a Wazuh alert.
 
 **Actions Taken:**
-- Simulated file execution attempt using `logger` on CT103 (SABnzbd):
-  `logger "SABnzbd attempted to execute /mnt/tank/downloads/complete/movies/suspicious_file.exe"`
-- Verified that custom Wazuh rule 100102 fired a Level 12 alert in the Dashboard.
-- Developed a comprehensive Incident Response Playbook covering detection,
-  containment, eradication, and recovery procedures tailored to the LXC/Proxmox
-  environment.
+- Created a simulated malicious file in SABnzbd's download staging area.
+- Generated a log event using `logger` to trigger the custom detection rule.
+- Verified Wazuh rule 100102 fired a Level 12 alert with full log details.
+- Mounted the stopped container's filesystem and inspected the suspicious file.
+- Captured SHA256 hash of the file and cross‑referenced with Talos Intelligence.
+- Deleted the malicious file as part of eradication procedures.
+- Restarted the container to complete recovery.
 
 **Key Learning:**
-- Custom detection rules enable rapid identification of application‑layer anomalies.
-- A pre‑defined IR playbook reduces response time and ensures consistent handling.
-- LXC container isolation simplifies forensic analysis and containment actions.
+- Custom Wazuh rules provide immediate visibility into application‑layer threats.
+- Container isolation (LXC) enables forensic analysis without impacting other services.
+- Integrating threat intelligence (Talos) adds context to file‑based alerts.
+- A documented playbook streamlines incident response for repeatable scenarios.
 
 **Artifacts:**
-- [Incident Response Playbook – SABnzbd Malware](incident_response/IR_SABnzbd_Malware.md)
-- [Wazuh Alert – Rule 100102 Fired](wazuh/screenshots/alert_100102_fired.png)
+- [Incident Response Playbook](incident_response/IR_SABnzbd_Malware.md)
+- [Wazuh Alert – Rule 100102 Fired](incident_response/alert_100102_simulation.png)
+- [Mounted Filesystem – File Inspection](incident_response/file_inspection.png)
+- [SHA256 Hash & Talos Intelligence Check](incident_response/talos_hash_check.png)
+- [Eradication – File Deletion](incident_response/file_deletion.png)

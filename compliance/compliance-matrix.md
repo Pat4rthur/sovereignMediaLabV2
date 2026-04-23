@@ -31,11 +31,11 @@ Status legend: [Pass] = Fully compliant  [Fail] = Not compliant  [Partial] = Par
 | **2.1.25** | Ensure rlogin is not installed | **[Pass]** | `rlogin` not found |
 | **2.1.26** | Ensure rexec is not installed | **[Pass]** | `rexec` not found |
 | **3.1.1** | Ensure IP forwarding is disabled | **[Pass]** | `net.ipv4.ip_forward = 0` |
-| **3.1.2** | Ensure packet redirect sending is disabled | **[Fail]** | `send_redirects = 1` (CIS expects 0) |
+| **3.1.2** | Ensure packet redirect sending is disabled | **[Pass]** | `send_redirects` set to 0 |
 | **3.1.3** | Ensure source routed packets are not accepted | **[Pass]** | `accept_source_route = 0` |
 | **3.1.4** | Ensure ICMP redirects are not accepted | **[Pass]** | `accept_redirects = 0` |
-| **3.1.5** | Ensure secure ICMP redirects are not accepted | **[Fail]** | `secure_redirects = 1` (CIS expects 0) |
-| **3.1.6** | Ensure suspicious packets are logged | **[Fail]** | `log_martians = 0` (CIS expects 1) |
+| **3.1.5** | Ensure secure ICMP redirects are not accepted | **[Pass]** | `secure_redirects` set to 0 |
+| **3.1.6** | Ensure suspicious packets are logged | **[Pass]** | `log_martians` set to 1 |
 | **3.1.7** | Ensure broadcast ICMP requests are ignored | **[Pass]** | `icmp_echo_ignore_broadcasts = 1` |
 | **3.1.8** | Ensure bogus ICMP responses are ignored | **[Pass]** | `icmp_ignore_bogus_error_responses = 1` |
 | **3.1.9** | Ensure Reverse Path Filtering is enabled | **[Pass]** | `rp_filter = 2` (strict mode) |

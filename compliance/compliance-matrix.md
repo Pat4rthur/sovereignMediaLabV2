@@ -42,7 +42,7 @@ Status legend: [Pass] = Fully compliant  [Fail] = Not compliant  [Partial] = Par
 | **3.1.10** | Ensure TCP SYN Cookies are enabled | **[Pass]** | `tcp_syncookies = 1` |
 | **3.2.1** | Ensure IPv6 router advertisements are not accepted | **[Pass]** | `accept_redirects = 0` for all and default |
 | **3.5.1.1** | Ensure a software firewall is configured | **[Pass]** | UFW active; default deny incoming; port 22 restricted to Proxmox host; port 8989 restricted to LAN subnet |
-| **4.1.1.1** | Ensure auditd is installed | **[Fail]** | `auditd` service not installed |
+| **4.1.1.1** | Ensure auditd is installed | **[Fail]** | `auditd` installed but fails to start — audit kernel subsystem not available on Proxmox host; requires host-level kernel configuration beyond container scope. | 
 | **4.1.2** | Ensure logrotate is configured | **[Pass]** | `logrotate` installed; config covers `/var/log/syslog` and `/var/log/auth.log` |
 | **5.1.1** | Ensure password expiration is 365 days or less | **[Fail]** | `PASS_MAX_DAYS = 99999` |
 | **5.1.2** | Ensure minimum days between password changes is 1 or more | **[Fail]** | `PASS_MIN_DAYS = 0` |

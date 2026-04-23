@@ -7,7 +7,7 @@ Status legend: [Pass] = Fully compliant  [Fail] = Not compliant  [Partial] = Par
 |---------|---------------------|--------|-------------------|
 | **1.6.2.1** | Ensure AppArmor is installed and enforcing | **[Partial]** | `apparmor` module loaded; 131 profiles loaded; 32 profiles in enforce mode, 23 in complain mode; no currently confined processes |
 | **1.8** | Ensure automatic security updates are enabled | **[Pass]** | `unattended-upgrades` installed and active; Sonarr APT repo deprecated, removed |
-| **2.1.1** | Ensure unnecessary services are disabled / removed | **[Fail]** | `postfix@-.service` running (MTA not required for Sonarr) |
+| **2.1.1** | Ensure unnecessary services are disabled / removed | **[Pass]** | `postfix@-.service` was running (MTA not required for Sonarr); stopped, disabled, and masked |
 | **2.1.2** | Ensure X Window System is not installed | **[Pass]** | `xserver` packages not found |
 | **2.1.3** | Ensure Avahi Server is not installed | **[Pass]** | `avahi-daemon` not found |
 | **2.1.4** | Ensure CUPS is not installed | **[Pass]** | `cups` not found |

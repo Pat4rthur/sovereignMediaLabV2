@@ -63,6 +63,6 @@ Status legend: [Pass] = Fully compliant  [Fail] = Not compliant  [Partial] = Par
 | **5.4.8** | Ensure no world-writable files exist | **[Pass]** | No world‑writable files found |
 | **5.4.9** | Ensure no world-writable directories exist without sticky bit | **[Pass]** | No directories without sticky bit found |
 | **5.5.1** | Ensure root's PATH integrity | **[Pass]** | No empty/dot entries; `/sbin` and `/bin` are symlinks → `/usr/sbin` and `/usr/bin` (755 each); PATH directories correctly permissioned || **5.5.1** | Ensure root's PATH integrity | **[Pass]** | No empty/dot entries; `/sbin` and `/bin` are symlinks → `/usr/sbin` and `/usr/bin` (755 each); PATH directories correctly permissioned |
-| **5.6.1** | Ensure default user umask is 027 or more restrictive | **[Fail]** | `umask = 0022` |
-| **5.6.2** | Ensure shell timeout is configured | **[Fail]** | `TMOUT` not set |
+| **5.6.1** | Ensure default user umask is 027 or more restrictive | **[Pass]** | `umask 027` set via `/etc/profile`; login shells apply correctly |
+| **5.6.2** | Ensure shell timeout is configured | **[Pass]** | `TMOUT=600` (readonly) set via `/etc/profile` |
 

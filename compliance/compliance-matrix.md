@@ -53,7 +53,7 @@ Status legend: [Pass] = Fully compliant  [Fail] = Not compliant  [Partial] = Par
 | **5.1.7** | Ensure no duplicate UIDs exist | **[Pass]** | No duplicate UIDs |
 | **5.1.8** | Ensure no duplicate GIDs exist | **[Pass]** | No duplicate GIDs |
 | **5.1.9** | Ensure root is the only UID 0 account | **[Pass]** | Only `root` has UID 0 |
-| **5.2.1** | Ensure SSH is configured correctly | **[Fail]** | `passwordauthentication = yes`; `maxauthtries = 6` |
+| **5.2.1** | Ensure SSH is configured correctly | **[Pass]** | `passwordauthentication = no`; `maxauthtries = 4`; `permitrootlogin = without-password`; `pubkeyauthentication = yes` |
 | **5.4.2** | Ensure permissions on /etc/passwd are configured | **[Pass]** | `644` |
 | **5.4.3** | Ensure permissions on /etc/shadow are configured | **[Pass]** | `640` |
 | **5.4.4** | Ensure permissions on /etc/group are configured | **[Pass]** | `644` |

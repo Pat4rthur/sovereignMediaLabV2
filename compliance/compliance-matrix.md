@@ -66,3 +66,5 @@ Status legend: [Pass] = Fully compliant  [Fail] = Not compliant  [Partial] = Par
 | **5.6.1** | Ensure default user umask is 027 or more restrictive | **[Pass]** | `umask 027` set via `/etc/profile`; login shells apply correctly |
 | **5.6.2** | Ensure shell timeout is configured | **[Pass]** | `TMOUT=600` (readonly) set via `/etc/profile` |
 
+**All LXC containers (CT102–CT111) hardened with the same baseline above.**  
+Script used: [compliance/cis-hardening-script.sh](compliance/cis-hardening-script.sh)

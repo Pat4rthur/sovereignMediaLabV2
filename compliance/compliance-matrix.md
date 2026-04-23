@@ -59,7 +59,7 @@ Status legend: [Pass] = Fully compliant  [Fail] = Not compliant  [Partial] = Par
 | **5.4.4** | Ensure permissions on /etc/group are configured | **[Pass]** | `644` |
 | **5.4.5** | Ensure permissions on /etc/gshadow are configured | **[Pass]** | `640` |
 | **5.4.6** | Ensure permissions on /etc/sudoers are configured | **[Pass]** | `440` |
-| **5.4.7** | Ensure permissions on /etc/crontab are configured | **[Fail]** | `644` (CIS expects 600) |
+| **5.4.7** | Ensure permissions on /etc/crontab are configured | **[Pass]** | Changed from `644` to `600` |
 | **5.4.8** | Ensure no world-writable files exist | **[Pass]** | No world‑writable files found |
 | **5.4.9** | Ensure no world-writable directories exist without sticky bit | **[Pass]** | No directories without sticky bit found |
 | **5.5.1** | Ensure root's PATH integrity | **[Fail]** | No empty/dot entries; but `/sbin` and `/bin` are world‑writable (777) |

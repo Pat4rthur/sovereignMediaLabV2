@@ -220,6 +220,35 @@ execution attempt is logged, triggering a Wazuh alert.
 - [SHA256 Hash & Talos Intelligence Check](incident_response/talos_hash_check.png)
 - [Eradication – File Deletion](incident_response/file_deletion.png)
 
+## Phase 5: Compliance Hardening & Governance
+
+**Objective:** Harden all LXC containers against CIS Benchmarks, automate
+compliance assessment, and document security controls to simulate enterprise
+governance workflows.
+
+**Actions Taken:**
+- Mapped existing UFW, SSH, VPN, and SIEM controls on CT104 (Sonarr) to CIS
+  Ubuntu 22.04 L2 Benchmark, creating a 42‑row compliance matrix.
+- Applied hardening measures to CT104: automatic security updates, auditd
+  installation (platform limitation documented), kernel parameter tuning,
+  unnecessary service removal (postfix), SSH hardening, file permission
+  corrections, root PATH verification, and default umask/TMOUT configuration.
+- Wrote and executed a repeatable bash script (`cis-hardening-script.sh`) that
+  applied the same 9‑control hardening baseline across all remaining LXC
+  containers (CT102–CT111) in a single pass.
+
+**Key Learning:**
+- Mapping controls to a formal framework (CIS/NIST) transforms operational
+  security into demonstrable governance.
+- Automating hardening with scripts ensures consistency and repeatability.
+- Some controls (e.g., auditd) have platform limitations that must be
+  documented rather than fixed—understanding scoping is as important as
+  remediation.
+
+**Artifacts:**
+- [Compliance Matrix](compliance/compliance-matrix.md)
+- [Hardening Script](compliance/cis-hardening-script.sh)
+
 ## ⚖️ Ethical Use Statement
 This project is a **cybersecurity homelab built for educational and portfolio
 purposes only**. All media content used in testing was legally obtained or

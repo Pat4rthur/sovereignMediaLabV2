@@ -101,3 +101,11 @@ Expanded one 5760 alert and viewed the full JSON payload. Key fields:
 | Tactic | Technique | ID |
 |--------|-----------|----|
 | Discovery | System Network Configuration Discovery | T1016 |
+
+## Artifacts
+- [Wazuh Security Events – 4×5760 + 1×5501](soc-scenarios/artifacts/scenario-01/events.png)
+- [Rule 5760 JSON payload – srcip 172.16.5.10](soc-scenarios/artifacts/scenario-01/5760-json.png)
+- [Hydra brute‑force terminal output](soc-scenarios/artifacts/scenario-01/hydra-output.png)
+- [Proxmox iptables MASQUERADE rule](soc-scenarios/artifacts/scenario-01/iptables-masquerade.png)
+- [Threat Hunting report bar chart](soc-scenarios/artifacts/scenario-01/threat-hunt.png)
+- [Raw auth.log segment](soc-scenarios/artifacts/scenario-01/authlog.txt)

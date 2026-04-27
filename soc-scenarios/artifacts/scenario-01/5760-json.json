@@ -1,0 +1,94 @@
+{
+  "_index": "wazuh-alerts-4.x-2026.04.27",
+  "_id": "qhH4z50Bu-j7xMcMy3DI",
+  "_score": null,
+  "_source": {
+    "predecoder": {
+      "hostname": "sonarr",
+      "program_name": "sshd",
+      "timestamp": "Apr 27 17:24:38"
+    },
+    "input": {
+      "type": "log"
+    },
+    "agent": {
+      "ip": "172.16.5.74",
+      "name": "sonarr",
+      "id": "008"
+    },
+    "manager": {
+      "name": "wazuh.manager"
+    },
+    "data": {
+      "srcip": "172.16.5.10",
+      "dstuser": "testuser",
+      "srcport": "36444"
+    },
+    "rule": {
+      "mail": false,
+      "level": 5,
+      "hipaa": [
+        "164.312.b"
+      ],
+      "pci_dss": [
+        "10.2.4",
+        "10.2.5"
+      ],
+      "tsc": [
+        "CC6.1",
+        "CC6.8",
+        "CC7.2",
+        "CC7.3"
+      ],
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "nist_800_53": [
+        "AU.14",
+        "AC.7"
+      ],
+      "gdpr": [
+        "IV_35.7.d",
+        "IV_32.2"
+      ],
+      "firedtimes": 4,
+      "mitre": {
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ],
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ]
+      },
+      "id": "5760",
+      "gpg13": [
+        "7.1"
+      ]
+    },
+    "location": "journald",
+    "decoder": {
+      "parent": "sshd",
+      "name": "sshd"
+    },
+    "id": "1777310679.83974",
+    "full_log": "Apr 27 17:24:38 sonarr sshd[147450]: Failed password for testuser from 172.16.5.10 port 36444 ssh2",
+    "timestamp": "2026-04-27T17:24:39.288+0000"
+  },
+  "fields": {
+    "timestamp": [
+      "2026-04-27T17:24:39.288Z"
+    ]
+  },
+  "sort": [
+    1777310679288
+  ]
+}

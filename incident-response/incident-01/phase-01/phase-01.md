@@ -282,10 +282,10 @@ This exercise reinforced the importance of:
 ---
 
 # Artifacts
-- [Wazuh Security Events – 4×5760 + 1×5501](/soc-scenarios/scenario-01/artifacts/events.png)
-- [Rule 5760 JSON payload – srcip 172.16.5.10](/soc-scenarios/scenario-01/artifacts/5760-json.json)
-- [Hydra brute-force terminal output](/soc-scenarios/scenario-01/artifacts/hydra-output.png)
-- [Proxmox iptables MASQUERADE rule](/soc-scenarios/scenario-01/artifacts/iptables-masquerade.png)
-- [Threat Hunting report visualization](/soc-scenarios/scenario-01/artifacts/threat-hunt.png)
-- [Raw authentication log segment](/soc-scenarios/scenario-01/artifacts/sshAuthLog.png)
+- [Wazuh Security Events – 4×5760 + 1×5501](/incident-response/incident-01/phase-01/artifacts/events.png)
+- [Rule 5760 JSON payload – srcip 172.16.5.10](/incident-response/incident-01/phase-01/artifacts/5760-json.json)
+- [Hydra brute-force terminal output](/incident-response/incident-01/phase-01/artifacts/hydra-output.png)
+- [Proxmox iptables MASQUERADE rule](/incident-response/incident-01/phase-01/artifacts/iptables-masquerade.png)
+- [Threat Hunting report visualization](/incident-response/incident-01/phase-01/artifacts/threat-hunt.png)
+- [Raw authentication log segment](/incident-response/incident-01/phase-01/artifacts/sshAuthLog.png)
 

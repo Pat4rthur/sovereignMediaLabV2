@@ -20,6 +20,7 @@ Because UFW logging inside unprivileged LXC containers does not reliably surface
 `iptables -I FORWARD -s 172.16.5.0/24 -j LOG --log-prefix "FW-FORWARD-SCAN:`
 
 I then re‑ran the scan from CT104 and captured the live kernel output via `journalctl -k -f`. The following entries show the reconnaissance traffic from `SRC=172.16.5.74` to `DST=172.16.5.73` with SYN flags on the scanned ports:
+
 `Apr 29 07:23:27 pve kernel: FW-FORWARD-SCAN: IN=vmbr0 OUT=vmbr0 PHYSIN=veth104i0 PHYSOUT=veth103i0 MAC=... SRC=172.16.5.74 DST=172.16.5.73 ... DPT=22 ... SYN
 Apr 29 07:23:27 pve kernel: FW-FORWARD-SCAN: IN=vmbr0 OUT=vmbr0 PHYSIN=veth104i0 PHYSOUT=veth103i0 MAC=... SRC=172.16.5.74 DST=172.16.5.73 ... DPT=8989 ... SYN
 ...`

@@ -70,4 +70,4 @@ The attacker successfully performed internal reconnaissance from a compromised c
 ## Artifacts
 - [Kernel log evidence of scan](artifacts/phase-02-scan-evidence.txt)
 - [Wazuh dashboard – absence of scan alerts](artifacts/phase-02-wazuh-no-alerts.png)
-- [Live journalctl output showing SYN packets](artifacts/phase-02-live-scan.png)
+

@@ -104,5 +104,5 @@ This phase demonstrates that **even a low‑privileged account can be used for d
 | Persistence | Create Account (attempted) | T1136.001 |
 
 ## Artifacts
-- [Wazuh alert – Rule 5405 (Unauthorized sudo attempt)](artifacts/phase-03-sudo-alert.png)
-- [Raw auth.log segment – sudo denial](artifacts/phase-03-authlog.txt)
+- [Wazuh alert – Rule 5405 (Unauthorized sudo attempt)](artifacts/phase-03-sudo-alert.json)
+- [Raw auth.log segment – sudo denial](artifacts/phase-03-authlog.png)

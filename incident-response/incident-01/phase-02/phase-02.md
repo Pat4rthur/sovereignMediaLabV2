@@ -25,6 +25,7 @@ Unprivileged LXC containers do not surface UFW kernel blocks to the container’
 With the LOG rule active, I re‑ran the scan from CT104 and captured live kernel output via `journalctl -k -f`. The following entries show the attacker’s SYN packets crossing the Proxmox bridge from `SRC=172.16.5.74` to `DST=172.16.5.73` on the exact ports targeted:
 
 `Apr 29 07:23:27 pve kernel: FW-FORWARD-SCAN: IN=vmbr0 OUT=vmbr0 PHYSIN=veth104i0 PHYSOUT=veth103i0 ... SRC=172.16.5.74 DST=172.16.5.73 ... DPT=22 ... SYN`
+
 `Apr 29 07:23:27 pve kernel: FW-FORWARD-SCAN: IN=vmbr0 OUT=vmbr0 PHYSIN=veth104i0 PHYSOUT=veth103i0 ... SRC=172.16.5.74 DST=172.16.5.73 ... DPT=8989 ... SYN`
 
 

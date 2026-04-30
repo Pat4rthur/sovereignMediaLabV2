@@ -1,108 +1,226 @@
 # Phase 3: Privilege Escalation Attempt – Unauthorized sudo
 
-**Incident:** Incident‑01 – Credential Brute‑Force to Privilege Escalation Attempt  
+**Incident:** Incident-01 – Credential Brute-Force to Privilege Escalation Attempt  
 **Phase:** 3 of 4  
-**Date:** 2026‑04‑29  
+**Date:** 2026-04-29  
 **Analyst:** Sovereign Media Lab SOC  
-**Status:** Attempt blocked; detection validated
+**Status:** Attempt blocked – Detection validated after log ingestion gap resolved  
 
 ---
 
-## Attack Description
-After establishing a foothold on the **Sonarr** container (CT104, `172.16.5.74`) via compromised credentials (`testuser:password123`), the attacker attempted to create a new user account (`hacker`) using `sudo adduser hacker`. The goal was likely persistence—ensuring continued access even if the `testuser` password were changed.
+# Executive Summary
 
-The command was run from an interactive SSH session as `testuser`.  
-Because `testuser` is **not** a member of the `sudo` group and has no explicit `sudoers` entry, the attempt was denied by the system’s sudo policy.
+Following internal reconnaissance in Phase 2, the attacker attempted to escalate privileges on the compromised **Sonarr** container by creating a new user account via `sudo adduser hacker`.
 
-## Log Evidence (Raw)
-The attempt generated clear entries in `/var/log/auth.log`. After the Wazuh agent logging gap was closed (see Investigation Step 3), the event was forwarded to the SIEM.
+The attempt was blocked by the system’s sudo policy, as the compromised account (`testuser`) lacked the required privileges. However, initial execution of the command produced **no SIEM alerts**, revealing a critical log collection gap in the Wazuh agent configuration.
 
-**Relevant log lines:**
-`Apr 29 15:27:04 sonarr sudo[163686]: testuser : user NOT in sudoers ; TTY=pts/3 ; PWD=/home/testuser ; USER=root ; COMMAND=/usr/sbin/adduser hacker`
+After enabling monitoring of `/var/log/auth.log`, the same activity immediately triggered a built-in Wazuh rule (5405) without requiring custom detection logic.
 
-**Note:** The earlier `sudo -n` attempts without a password did not trigger this alert because sudo requires authentication before it authorizes the command. Only when the correct password was supplied did the “user NOT in sudoers” message appear and get captured.
+This phase demonstrates:
+- Detection of unauthorized privilege escalation attempts via native SIEM rules  
+- Identification and remediation of an agent-level logging gap  
+- Correlation of attacker activity with authentication telemetry  
+- Validation of defense-in-depth controls (OS policy + SIEM detection)  
 
-## Wazuh Alerts Triggered
-- **Rule 5405** — `Unauthorized user attempted to use sudo.` (Level 5)
+---
 
-*MITRE ATT&CK tags from the Wazuh rule:*  
-`T1548.003` — Sudo and Sudo Caching  
-**Tactics:** Privilege Escalation, Defense Evasion
+# Severity & Impact
 
-## Investigation Steps
+**Severity:** Medium  
 
-### 1. Alert Triage
-I filtered the Wazuh Security Events for agent `sonarr` around the time of the known attacker activity. A Level 5 alert with rule ID 5405 appeared, describing an unauthorized sudo attempt. The alert’s full log showed the user `testuser`, the command `/usr/sbin/adduser hacker`, and the denial reason.
+**Impact:**  
+The attacker attempted to create a persistent backdoor account (`hacker`) that would survive credential rotation and enable continued access.
 
-### 2. Correlating with the Attacker Session
-The timestamp of the alert matched the moment the attacker typed `sudo adduser hacker` in the SSH session. The command exactly matched what the attacker described attempting. The alert’s `data.srcuser` field confirmed the user was `testuser`, not root or a legitimate administrator.
+Although the attempt was blocked, the initial absence of SIEM visibility represents a **critical detection gap**. Without remediation, privilege escalation attempts could occur without alerting, delaying response and increasing risk of successful compromise.
 
-### 3. Fixing the Logging Gap
-The Wazuh agent on CT104 was not initially shipping `/var/log/auth.log` to the manager, despite the events being recorded locally. This was discovered when earlier `sudo` attempts did not produce SIEM alerts.  
-I edited the agent’s configuration and added a `<localfile>` block for `/var/log/auth.log`, then restarted the agent. Immediately after, the unauthorized attempt triggered rule 5405 without any custom rule changes.
+---
 
-**Reference:** The same logging gap was later documented in `docs/troubleshooting.md` with the remediation.
+# Phase Objective
 
-### 4. Confirming the Attempt Was Denied
-I verified that `testuser` is not in the `sudo` group and has no special privileges. The `sudo` policy correctly rejected the command. The attacker’s attempt to create a persistent backdoor account failed.
+This phase evaluated the SOC’s ability to:
 
-## Conclusion
-This phase demonstrates that **even a low‑privileged account can be used for dangerous actions**, but that **proper sudo policy enforcement prevents escalation**. The attempt was immediately denied by the operating system and detected by a built‑in Wazuh rule—no custom detection engineering was required once the basic logging configuration was corrected.
+- Detect privilege escalation attempts via sudo  
+- Identify and resolve SIEM log collection gaps  
+- Correlate attacker commands with alert telemetry  
+- Validate enforcement of least-privilege controls  
 
-**Containment Actions Taken:**
-- Verified that `testuser` does not have `sudo` privileges.
-- Left the account active to continue monitoring the attacker’s behavior (account will be revoked after the full incident lifecycle).
-- Enabled `auth.log` monitoring on the Sonarr Wazuh agent to prevent future detection gaps.
+---
 
-## MITRE ATT&CK Mapping
+# Environment Overview
+
+| System | Role | IP Address |
+|---|---|---|
+| CT104 – Sonarr | Compromised Host | 172.16.5.74 |
+| Wazuh Manager | SIEM Platform | Internal |
+
+The Sonarr container runs Ubuntu 22.04 with CIS hardening applied. The `testuser` account is a standard unprivileged user with no sudo group membership and no explicit sudoers entries.
+
+Authentication logs are written to `/var/log/auth.log` and must be explicitly monitored by the Wazuh agent.
+
+---
+
+# Attack Simulation
+
+From the established SSH session, the attacker attempted to create a new user account:
+
+```bash
+sudo adduser hacker
+```
+
+The attacker supplied the known password for `testuser` when prompted. Authentication succeeded, but authorization failed due to lack of sudo privileges.
+
+Earlier attempts using `sudo -n` failed silently from a detection perspective, as they did not reach the authorization stage required to generate a `user NOT in sudoers` log entry.
+
+---
+
+# MITRE ATT&CK Mapping
+
 | Tactic | Technique | ID |
-|--------|-----------|----|
+|---|---|---|
 | Privilege Escalation | Sudo and Sudo Caching | T1548.003 |
 | Persistence | Create Account (attempted) | T1136.001 |
 
-## Artifacts
-- [Wazuh alert – Rule 5405 (Unauthorized sudo attempt)](artifacts/phase-03-sudo-alert.png)
-- [Raw auth.log segment – sudo denial](artifacts/phase-03-authlog.txt)
-**Note:** The earlier `sudo -n` attempts without a password did not trigger this alert because sudo requires authentication before it authorizes the command. Only when the correct password was supplied did the “user NOT in sudoers” message appear and get captured.
+---
 
-## Wazuh Alerts Triggered
-- **Rule 5405** — `Unauthorized user attempted to use sudo.` (Level 5)
+# Detection & Telemetry
 
-*MITRE ATT&CK tags from the Wazuh rule:*  
-`T1548.003` — Sudo and Sudo Caching  
-**Tactics:** Privilege Escalation, Defense Evasion
+## Alerts Triggered
 
-## Investigation Steps
+- **Rule 5405** — `Unauthorized user attempted to use sudo` (Level 5)
 
-### 1. Alert Triage
-I filtered the Wazuh Security Events for agent `sonarr` around the time of the known attacker activity. A Level 5 alert with rule ID 5405 appeared, describing an unauthorized sudo attempt. The alert’s full log showed the user `testuser`, the command `/usr/sbin/adduser hacker`, and the denial reason.
+The alert was generated only after `/var/log/auth.log` monitoring was enabled on the Sonarr Wazuh agent.
 
-### 2. Correlating with the Attacker Session
-The timestamp of the alert matched the moment the attacker typed `sudo adduser hacker` in the SSH session. The command exactly matched what the attacker described attempting. The alert’s `data.srcuser` field confirmed the user was `testuser`, not root or a legitimate administrator.
+This confirms:
+- Detection logic was functioning as expected  
+- The gap existed in **log collection**, not rule coverage  
 
-### 3. Fixing the Logging Gap
-The Wazuh agent on CT104 was not initially shipping `/var/log/auth.log` to the manager, despite the events being recorded locally. This was discovered when earlier `sudo` attempts did not produce SIEM alerts.  
-I edited the agent’s configuration and added a `<localfile>` block for `/var/log/auth.log`, then restarted the agent. Immediately after, the unauthorized attempt triggered rule 5405 without any custom rule changes.
+---
 
-**Reference:** The same logging gap was later documented in `docs/troubleshooting.md` with the remediation.
+# Timeline of Events
 
-### 4. Confirming the Attempt Was Denied
-I verified that `testuser` is not in the `sudo` group and has no special privileges. The `sudo` policy correctly rejected the command. The attacker’s attempt to create a persistent backdoor account failed.
+| Time (UTC) | Event |
+|---|---|
+| 04-29 15:09 | Initial `sudo -n` attempts; no SIEM alerts |
+| 04-29 15:17 | Logging gap identified; `/var/log/auth.log` added to agent config |
+| 04-29 15:17 | Wazuh agent restarted |
+| 04-29 15:27 | `sudo adduser hacker` executed; Rule 5405 triggered |
 
-## Conclusion
-This phase demonstrates that **even a low‑privileged account can be used for dangerous actions**, but that **proper sudo policy enforcement prevents escalation**. The attempt was immediately denied by the operating system and detected by a built‑in Wazuh rule—no custom detection engineering was required once the basic logging configuration was corrected.
+---
 
-**Containment Actions Taken:**
-- Verified that `testuser` does not have `sudo` privileges.
-- Left the account active to continue monitoring the attacker’s behavior (account will be revoked after the full incident lifecycle).
-- Enabled `auth.log` monitoring on the Sonarr Wazuh agent to prevent future detection gaps.
+# Log Evidence
 
-## MITRE ATT&CK Mapping
-| Tactic | Technique | ID |
-|--------|-----------|----|
-| Privilege Escalation | Sudo and Sudo Caching | T1548.003 |
-| Persistence | Create Account (attempted) | T1136.001 |
+The following entry was recorded in `/var/log/auth.log`:
 
-## Artifacts
-- [Wazuh alert – Rule 5405 (Unauthorized sudo attempt)](artifacts/phase-03-sudo-alert.json)
+```text
+Apr 29 15:27:04 sonarr sudo[163686]: testuser : user NOT in sudoers ; TTY=pts/3 ; PWD=/home/testuser ; USER=root ; COMMAND=/usr/sbin/adduser hacker
+```
+
+The Wazuh alert payload confirmed:
+- `srcuser`: testuser  
+- `command`: /usr/sbin/adduser hacker  
+
+This directly correlates to the attacker’s observed activity.
+
+---
+
+# Investigation
+
+## Alert Triage
+
+Wazuh events were reviewed for agent `sonarr` during the attack window. Following the configuration change, a Level 5 alert (Rule 5405) appeared with full command and user context.
+
+Prior to enabling `auth.log` monitoring, identical activity produced no alerts, confirming a visibility gap.
+
+---
+
+## Detection Gap Analysis
+
+The Sonarr Wazuh agent was not configured to monitor `/var/log/auth.log`, preventing authentication and sudo events from being forwarded to the SIEM.
+
+The issue was resolved by adding:
+
+```xml
+<localfile>
+  <location>/var/log/auth.log</location>
+  <log_format>syslog</log_format>
+</localfile>
+```
+
+After restarting the agent, the same activity immediately generated alerts without requiring any rule modifications.
+
+---
+
+## Activity Correlation
+
+The alert timestamp aligned precisely with the attacker’s command execution in the SSH session.
+
+Correlated data points:
+- User: `testuser`  
+- Command: `/usr/sbin/adduser hacker`  
+- Outcome: Authorization denied  
+
+This confirms the activity was malicious and not associated with legitimate administrative behavior.
+
+---
+
+## Control Validation
+
+System configuration review confirmed:
+- `testuser` is not in the sudo group  
+- No sudoers exceptions are defined  
+
+The operating system correctly enforced least privilege by denying the request.
+
+Detection was then successfully layered on top via SIEM integration.
+
+---
+
+# Analyst Assessment
+
+This phase highlights two critical realities of SOC operations:
+
+1. **Detection is only as effective as log coverage**  
+   The SIEM contained the correct detection logic but failed to alert due to incomplete log ingestion.
+
+2. **Privilege escalation attempts do not require success to be dangerous**  
+   Even failed attempts provide strong indicators of attacker intent and should be monitored.
+
+The rapid identification and remediation of the logging gap transformed an invisible attack into a detectable event, demonstrating effective real-time detection engineering.
+
+---
+
+# Containment Actions
+
+- Verified `testuser` has no sudo privileges  
+- Enabled `/var/log/auth.log` monitoring on the Wazuh agent  
+- Restarted agent and validated alert generation  
+- Preserved logs and alert artifacts  
+- Maintained attacker access for continued observation  
+
+---
+
+# Recommendations
+
+| Recommendation | Purpose |
+|---|---|
+| Audit all Wazuh agents for missing log sources | Prevent similar visibility gaps |
+| Standardize auth.log monitoring across endpoints | Ensure consistent detection coverage |
+| Review sudo policies across all systems | Enforce least privilege consistently |
+| Implement SSH key-based authentication | Reduce credential compromise risk |
+
+---
+
+# Key Findings
+
+- Unauthorized sudo attempt successfully blocked by OS policy  
+- Initial SIEM visibility gap identified and resolved during investigation  
+- Built-in Wazuh rule provided detection without custom engineering  
+- Agent-level log collection gaps can persist without validation  
+- Defense-in-depth controls functioned as intended once telemetry was restored  
+
+---
+
+# Artifacts
+
+- [Wazuh alert – Rule 5405 (Unauthorized sudo attempt)](artifacts/phase-03-sudo-alert.json)  
 - [Raw auth.log segment – sudo denial](artifacts/phase-03-authlog.png)

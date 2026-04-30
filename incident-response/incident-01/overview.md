@@ -10,7 +10,7 @@
 
 This incident documents a full post-compromise attack chain executed against the **Sonarr container** within a segmented homelab environment, simulating a real-world intrusion scenario from initial access through multiple privilege escalation attempts.
 
-The attacker gained initial access via a successful SSH credential brute-force attack, then proceeded to conduct internal reconnaissance and attempt multiple privilege escalation techniques, including `sudo`-based account creation and direct `su` authentication to root.
+The attacker gained [initial access via a successful SSH credential brute-force attack](phase-01/phase-01.md), then proceeded to conduct [internal reconnaissance](phase-02/phase-02.md) and attempt multiple privilege escalation techniques, including [sudo‑based account creation](phase-03/phase-03.md) and [direct `su` authentication to root](phase-04/phase-04.md).
 
 Across all phases of the attack, defensive controls either:
 - prevented execution at the operating system level, or  
@@ -61,3 +61,12 @@ The primary takeaway is not the success of detection, but the **identification a
 - Deployment of **Suricata IDS (Phase 7)** to provide network-level visibility independent of host logging configuration
 - Standardization of authentication log ingestion across all endpoints
 - Enforced SSH key-based authentication to eliminate password brute-force exposure
+
+---
+
+## Detailed Reports
+
+- [Phase 1 – SSH Brute-Force Attack (Initial Access)](phase-01/phase-01.md)
+- [Phase 2 – Internal Reconnaissance & Port Scan](phase-02/phase-02.md)
+- [Phase 3 – Unauthorized sudo Attempt](phase-03/phase-03.md)
+- [Phase 4 – su to Root Attempt](phase-04/phase-04.md)

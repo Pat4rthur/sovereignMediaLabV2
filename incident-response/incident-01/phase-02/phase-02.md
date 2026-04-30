@@ -1,65 +1,88 @@
 # Phase 2: Internal Reconnaissance – Port Scan & Service Enumeration
 
-**Incident:** Incident‑01 – Credential Brute‑Force to Privilege Escalation Attempt  
-**Phase:** 2 of 4  
-**Date:** 2026‑04‑29  
-**Analyst:** Sovereign Media Lab SOC  
-**Status:** Contained – Detection gap identified, engineering ticket filed
+**Incident:** Incident‑01 – Credential Brute‑Force to Privilege Escalation Attempt
+**Phase:** 2 of 4
+**Date:** 2026‑04‑29 through 2026‑04‑30
+**Analyst:** Sovereign Media Lab SOC
+**Status:** Evidence captured; SIEM detection deferred to Phase 7 (Suricata IDS)
 
 ---
 
 ## Attack Description
-Using the compromised credentials (`testuser:password123`) obtained in Phase 1, the attacker logged into the **Sonarr** container (CT104, `172.16.5.74`) and executed a network port scan against the **SABnzbd** container (CT103, `172.16.5.73`). The scan targeted ports 22 (SSH) and 8989 (SABnzbd web UI) using `nmap -Pn`. The intention was to map accessible services and identify further targets within the private 172.16.5.0/24 subnet.
+After establishing a foothold on the **Sonarr** container (CT104, `172.16.5.74`) with the compromised credentials from Phase 1, the attacker pivoted to internal reconnaissance. From an interactive SSH session as `testuser`, they executed a targeted port scan against the **SABnzbd** container (CT103, `172.16.5.73`) using **Nmap 7.80**. The scan probed ports **22** (SSH) and **8989** (SABnzbd web UI) with the `-Pn` flag to bypass host discovery. The objective was to map accessible services and locate further targets within the private `172.16.5.0/24` subnet.
 
-**Tools used:** Nmap 7.80  
-**Source host:** CT104 (`172.16.5.74`)  
-**Target host:** CT103 (`172.16.5.73`)
+**Tools used:** Nmap 7.80
+**Source host:** CT104 (`172.16.5.74`, container `sonarr`)
+**Target host:** CT103 (`172.16.5.73`, container `sabnzbd`)
+**Scanned ports:** 22 (open), 8989 (filtered by UFW)
 
 ## Log Evidence (Raw)
-Because UFW logging inside unprivileged LXC containers does not reliably surface kernel‑level blocks, I placed a temporary `iptables` LOG rule on the Proxmox host (`172.16.5.10`) to capture forwarded packets crossing the bridge:
-`iptables -I FORWARD -s 172.16.5.0/24 -j LOG --log-prefix "FW-FORWARD-SCAN:`
+Unprivileged LXC containers do not surface UFW kernel blocks to the container’s own log files. To capture the reconnaissance traffic, I placed a temporary `iptables` LOG rule directly on the **Proxmox host** (`172.16.5.10`), which sees all bridge traffic:
 
-I then re‑ran the scan from CT104 and captured the live kernel output via `journalctl -k -f`. The following entries show the reconnaissance traffic from `SRC=172.16.5.74` to `DST=172.16.5.73` with SYN flags on the scanned ports:
+`iptables -I FORWARD -s 172.16.5.0/24 -j LOG --log-prefix "FW-FORWARD-SCAN: " `
 
-`Apr 29 07:23:27 pve kernel: FW-FORWARD-SCAN: IN=vmbr0 OUT=vmbr0 PHYSIN=veth104i0 PHYSOUT=veth103i0 MAC=... SRC=172.16.5.74 DST=172.16.5.73 ... DPT=22 ... SYN`
 
-`Apr 29 07:23:27 pve kernel: FW-FORWARD-SCAN: IN=vmbr0 OUT=vmbr0 PHYSIN=veth104i0 PHYSOUT=veth103i0 MAC=... SRC=172.16.5.74 DST=172.16.5.73 ... DPT=8989 ... SYN
-...`
+With the LOG rule active, I re‑ran the scan from CT104 and captured live kernel output via `journalctl -k -f`. The following entries show the attacker’s SYN packets crossing the Proxmox bridge from `SRC=172.16.5.74` to `DST=172.16.5.73` on the exact ports targeted:
 
-*Note:* The MASQUERADE rule documented in Phase 1 remained active during the scan; however, the LOG rule captured the true source IP (`172.16.5.74`) because it examined packets before the NAT table rewrote the source address. This proved invaluable for attribution.
+`Apr 29 07:23:27 pve kernel: FW-FORWARD-SCAN: IN=vmbr0 OUT=vmbr0 PHYSIN=veth104i0 PHYSOUT=veth103i0 ... SRC=172.16.5.74 DST=172.16.5.73 ... DPT=22 ... SYN`
+`Apr 29 07:23:27 pve kernel: FW-FORWARD-SCAN: IN=vmbr0 OUT=vmbr0 PHYSIN=veth104i0 PHYSOUT=veth103i0 ... SRC=172.16.5.74 DST=172.16.5.73 ... DPT=8989 ... SYN`
 
-**Full evidence file:** [Kernel log extract](artifacts/phase-02-scan-evidence.txt)
+
+**Attribution note:** The MASQUERADE rule documented in Phase 1 remained active during the scan. However, because the `iptables` LOG rule fires in the FORWARD chain *before* the NAT POSTROUTING table rewrites source addresses, the true attacker IP (`172.16.5.74`) was preserved. This was a critical forensic detail: without it, the scan would have appeared to originate from the Proxmox host itself.
+
+The complete filtered evidence is preserved in the artifact file linked below.
+
+**Full evidence file:** [Filtered kernel log extract](artifacts/phase-02-scan-evidence.txt)
 
 ## Wazuh Alerts Triggered
 - **No alerts were generated** for the port scan activity.
 
-The Proxmox host’s Wazuh agent (`pve`) logged only routine authentication events during the scan window (rules 87203, 5501). No kernel‑forward messages appeared in the SIEM because the agent is not currently configured to monitor the kernel log.
+During the scan window, the Proxmox host’s Wazuh agent (`pve`, agent ID `007`) logged only routine events: rootcheck anomalies (rule 510) and authentication successes (rules 5501, 87203). No `FW‑FORWARD‑SCAN` messages ever reached the SIEM.
 
 ## Investigation Steps
 
 ### 1. Alert Triage
-I opened the Wazuh Security Events dashboard and filtered by `agent.name: pve` for the time window `2026‑04‑29 12:22–12:26 UTC`. The expected spike in scan‑related alerts was absent. This immediately raised a detection‑engineering question.
+I filtered the Wazuh Security Events dashboard by `agent.name: pve` for the time window `2026‑04‑29 12:22–12:26 UTC`. The scan window was completely silent in the SIEM — no new rules fired, no spike in event volume. This immediately signaled a detection gap: either the logs weren’t being collected, or they weren’t being parsed.
 
-### 2. Host‑Level Investigation
-To confirm that the attack actually occurred, I examined the Proxmox host’s kernel ring buffer using `journalctl -k -f` while re‑running the scan. The `FW-FORWARD-SCAN` entries provided definitive proof of reconnaissance activity originating from the compromised Sonarr container.
+### 2. Host‑Level Confirmation
+While the SIEM was silent, I confirmed the attack actually occurred by examining the Proxmox host’s kernel ring buffer directly. Running `journalctl -k -f` during a second scan produced the `FW‑FORWARD‑SCAN` entries shown above. This proved beyond doubt that the compromised Sonarr container was actively scanning the internal network — the evidence simply wasn’t reaching Wazuh.
 
-### 3. SIEM Visibility Gap
-I compared the host‑level evidence with the Wazuh console. The kernel lines were not ingested because the Proxmox agent lacks a `<localfile>` stanza for `/var/log/kern.log` and no custom rule exists to parse the `FW-FORWARD-SCAN` prefix. This is a classic blind spot in containerized monitoring environments.
+### 3. Detection Engineering: Closing the Gap (Unsuccessful)
+What followed was a multi‑hour effort to route kernel logs into the Wazuh pipeline. All attempts are documented in full in `docs/troubleshooting.md`. In summary:
 
-### 4. Documentation & Handoff
-I documented the gap, the temporary LOG rule, and the recommended Wazuh configuration (agent localfile + custom rule 100103) in the lab’s central troubleshooting document.
+| Method | Outcome |
+|--------|---------|
+| Add `<localfile>` for `journald` to the `pve` agent | Agent sent only rootcheck events; no kernel messages appeared |
+| Switch `<localfile>` to `/dev/kmsg` | Same result — no kernel messages in Wazuh |
+| Install `rsyslog`, configure `kern.* → /var/log/kern.log`, point agent at the file | `kern.log` populated correctly; agent still did not ship the lines |
+| Attempt custom rule 100103 with multiple XML variants | Manager crashed repeatedly; reverted to clean `local_rules.xml` via Docker |
 
-**Reference:** [Troubleshooting – Detection Gap: Proxmox Kernel Forward Logs](../../../docs/troubleshooting.md#detection-gap-proxmox-kernel-forward-logs-not-ingested-by-wazuh)
+Each attempt was verified: the kernel logs existed on the host, the agent was alive and communicating, but the logs never transited to the manager. The root cause appears to be a combination of the Proxmox LXC architecture, the double‑NAT environment, and the specific way the `iptables` LOG target interacts with the kernel’s logging subsystem — a limitation of the current lab design.
 
-This mirrors a real‑world incident workflow: the SOC analyst identifies a coverage gap, files a ticket with detection engineering, and preserves the evidence in the meantime.
+### 4. Evidence Preservation
+While the SIEM gap remains, the raw evidence is preserved in a filtered artifact (`phase-02-scan-evidence.txt`) containing only the scan‑relevant `FW‑FORWARD‑SCAN` lines. This allows manual correlation and serves as source material for the upcoming Suricata integration.
+
+### 5. Documentation & Remediation Path
+The full troubleshooting history, configuration attempts, and the clean rule XML that could not be deployed are documented in `docs/troubleshooting.md`. The permanent fix is deferred to **Phase 7 (Suricata IDS)** of the project roadmap, which will provide native network visibility and natively integrate with Wazuh’s Suricata module — no custom kernel log parsing required.
+
+---
 
 ## Conclusion
-The attacker successfully performed internal reconnaissance from a compromised container, proving the blast radius extends beyond the initial foothold. Although the SIEM did not automatically detect the scan, the combination of a temporary `iptables` LOG rule and direct kernel log inspection allowed me to confirm the activity, attribute it to the compromised host, and document the visibility gap for remediation.
+The attacker successfully performed internal reconnaissance from a compromised container, demonstrating that the blast radius extends well beyond the initial foothold. Although the SIEM did not automatically detect the scan, the combination of a temporary `iptables` LOG rule and direct kernel log inspection allowed me to:
+
+- Confirm the reconnaissance activity definitively
+- Attribute it to the compromised host (`172.16.5.74`)
+- Preserve forensic evidence
+- Identify and thoroughly document a SIEM visibility gap
+- File a concrete remediation plan (Phase 7) that will permanently close the gap
+
+This mirrors a real‑world SOC workflow: the analyst detects a blind spot, exhausts immediate remediation options, preserves evidence manually, and escalates to detection engineering with a clear path forward.
 
 **Containment Actions Taken:**
-- Retained the temporary `iptables` LOG rule to ensure continued visibility until permanent Wazuh monitoring is in place.
-- Filed detection‑engineering ticket in `docs/troubleshooting.md`.
-- Left the `testuser` account active and the SSH rule in place to allow continued monitoring of attacker behavior (will be revoked after the full incident lifecycle completes).
+- Retained the temporary `iptables` LOG rule for continued host‑level visibility
+- Preserved filtered kernel log evidence in the incident artifacts
+- Documented the full troubleshooting history in `docs/troubleshooting.md`
+- Left the `testuser` account and SSH access active to continue monitoring attacker behavior (to be revoked after the full incident lifecycle)
 
 ## MITRE ATT&CK Mapping
 | Tactic | Technique | ID |
@@ -68,6 +91,5 @@ The attacker successfully performed internal reconnaissance from a compromised c
 | Discovery | System Network Configuration Discovery | T1016 |
 
 ## Artifacts
-- [Kernel log evidence of scan](artifacts/phase-02-scan-evidence.txt)
+- [Filtered kernel log evidence of scan](artifacts/phase-02-scan-evidence.txt)
 - [Wazuh dashboard – absence of scan alerts](artifacts/phase-02-wazuh-no-alerts.png)
-

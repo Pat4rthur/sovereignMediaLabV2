@@ -64,5 +64,5 @@ The attacker failed to escalate privileges or create a persistent backdoor accou
 | Privilege Escalation | Valid Accounts | T1078 |
 
 ## Artifacts
-- [Wazuh alert – Rule 5301 (su authentication failure)](artifacts/phase-04-su-alert.png)
-- [Raw auth.log segment – su failure](artifacts/phase-04-authlog.txt)
+- [Wazuh alert – Rule 5301 (su authentication failure)](artifacts/phase-04-su-alert.json)
+- [Raw auth.log segment – su failure](artifacts/phase-04-authlog.png)

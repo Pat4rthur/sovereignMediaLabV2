@@ -124,16 +124,16 @@ See `artifacts/workmail-ari-failure.json` for a respresentative CloudTrail event
 
 ## Artifacts
 
-- ![CloudTrail Events](artifacts/cloudtrail-events.png)  
+- [CloudTrail Events](artifacts/cloudtrail-events.png)  
   CloudTrail history showing `ListBuckets`, `DescribeInstances`, and `GetCallerIdentity`.
 
-- ![IAM User Policies](artifacts/iam-user-policies.png)  
+- [IAM User Policies](artifacts/iam-user-policies.png)  
   Attached policies for `employee-user` (ReadOnlyAccess, AmazonS3ReadOnlyAccess).
 
-- ![EC2 Instance Details](artifacts/ec2-instance-details.png)  
+- [EC2 Instance Details](artifacts/ec2-instance-details.png)  
   Attacker EC2 instance `soc-cloud-victim-03` (running, key pair assigned).
 
-- ![IAM User Access Keys](artifacts/employee-user-keys.png)  
+- [IAM User Access Keys](artifacts/employee-user-keys.png)  
   Active access key for `employee-user` (ID shown, secret hidden).
 
 - [workmail-api-failure.json](artifacts/workmail-api-failure.json)  

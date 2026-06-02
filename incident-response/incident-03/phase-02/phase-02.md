@@ -93,6 +93,3 @@ Example events captured (see artifacts/`wazuh-events.csv`):
 
 4. **Dashboard API errors** (timeout connecting to indexer) do not affect agent log collection. Agents continue to forward logs, and alerts are still generated.
 
-## Next Phase
-
-Proceed to **Phase 03**: DNS tunneling simulation on EC2, execution of `dnscat2` to generate suspicious DNS patterns, and creation of custom Wazuh detection rules.

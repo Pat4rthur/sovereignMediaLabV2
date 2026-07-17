@@ -167,28 +167,7 @@ The lab is built on a Proxmox hypervisor hosting a segmented LXC container netwo
 
 ---
 
-## Phase 7: Secure Remote Access (WireGuard VPN)
-
-**Objective:** Replace exposed service access with zero-trust remote connectivity.
-
-**Actions Taken:**
-- Deployed WireGuard (WG-Easy) for VPN management
-- Restricted VPN routing to internal subnet only
-- Verified UFW enforcement over VPN tunnel
-- Blocked direct WAN exposure of service UIs
-
-**Key Learning:**
-- VPN routing must be explicitly constrained via AllowedIPs
-- Network segmentation remains enforced over encrypted tunnels
-- VPN does not bypass host-level firewall policy
-
-**Artifacts:**
-- [VPN Configuration](vpn/wg_easy_allowed_ips.png)
-- [Access Test Evidence](vpn/vpn_sonarr_access.jpeg)
-
----
-
-## Phase 8: Incident Response Simulation
+## Phase 7: Incident Response Simulation
 
 **Objective:** Simulate a full post-compromise attack chain and validate detection coverage.
 
@@ -217,7 +196,7 @@ Compromised SSH credentials used to pivot through internal network, escalate pri
 
 ---
 
-## Phase 9: Compliance Hardening (CIS Benchmarking)
+## Phase 8: Compliance Hardening (CIS Benchmarking)
 
 **Objective:** Align container configuration with CIS Ubuntu 22.04 benchmarks.
 
@@ -237,6 +216,64 @@ Compromised SSH credentials used to pivot through internal network, escalate pri
 - [Hardening Script](compliance/cis-hardening-script.sh)
 
 ---
+
+## Phase 8: Agentic AI Integration
+
+**Status:** ✅ Complete
+
+### Objective
+
+Integrate an agentic AI stack into the homelab, enabling natural‑language management of Proxmox, LXC containers, and the media stack through an MCP (Model Context Protocol) server. This replaces manual SSH and CLI workflows with conversational interactions.
+
+### Actions Taken
+
+1. **Created new LXC container (CT 112)** for AI services:
+   - Named `ai-agent` with IP `172.16.5.82`
+   - Configured networking with gateway `172.16.5.10` (Proxmox host NAT)
+
+2. **Installed local AI "brain":**
+   - Deployed **Ollama** as the local LLM runner
+   - Pulled **Llama 3 (8B)** model (~4.7 GB)
+   - Configured model storage on ZFS (`/tank/ollama/models`) to avoid disk constraints
+
+3. **Installed `homelab-mcp` server:**
+   - Node.js 20+ environment
+   - Global npm installation of `homelab-mcp`
+   - Created `.env` file with Proxmox token and media stack credentials
+
+4. **Configured secure transport:**
+   - Set up SSH key‑based authentication between Windows and Proxmox
+   - Connected Claude Desktop using Git for Windows SSH client (bypassing Windows SSH stdio limitations)
+   - Used `set -a && source .env` in the SSH command to export environment variables
+
+5. **Connected Claude Desktop as MCP client:**
+   - Configured `claude_desktop_config.json` with SSH command and environment sourcing
+   - Verified 99 tools across 16 domains were available
+
+6. **Tested and validated:**
+   - Ran container listing, service health checks, media queries
+   - Successfully created a new LXC container (CT 113) with Jellyfin via natural language
+
+### Key Learning
+
+- **Windows SSH is unreliable for MCP** – the built‑in SSH client closes stdin prematurely; Git for Windows SSH handles stdio correctly.
+- **Environment variables must be exported** – `source .env` alone is insufficient for Node.js; `set -a && source .env && set +a` ensures they are inherited.
+- **`cwd` matters** – the server loads `.env` from its current working directory; ensure it is placed where the SSH session starts (`/root`).
+- **Minimize indirection** – running the MCP server directly on the Proxmox host (rather than inside a container) reduces complexity.
+- **Local AI models are feasible** – a 7–8B parameter model runs comfortably on a homelab server with 16 GB+ RAM and produces reliable tool‑calling results.
+
+### Artifacts
+
+- [Troubleshooting Log – Incident 003](./docs/troubleshooting.md#incident-003-agentic-ai-integration)
+- [Claude Setup Conversation (public share)](https://claude.ai/share/82008e7f-4f83-459b-a5f1-04c6dd80561d)
+- [homelab-mcp GitHub Repository](https://github.com/Nainounen/homelab-mcp)
+- [Ollama GitHub Repository](https://github.com/ollama/ollama)
+
+---
+
+
+
+
 
 ## Ethical Use Statement
 
